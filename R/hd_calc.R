@@ -5,6 +5,7 @@
 #' @param data A projection dataset.
 #' @param reference A training dataset.
 #' @param biomarkers A character vector indicating the names of the biomarkers included in the HD algorithm.
+#' @param reference_weights A numerical vector with length equivalent to data with weights
 #' @return An object of class "hd". This object is a list with two elements (data and fit). The dataset can be drawn by typing 'data'. The model can be drawn by typing 'fit'.
 #' @examples
 #' #HD using NHANES
@@ -19,7 +20,7 @@
 #' @export
 #' @import dplyr
 
-hd_calc = function(data, reference, biomarkers){
+hd_calc = function(data, reference, biomarkers, reference_weights = NULL){
 
   ref = as.matrix(reference[, biomarkers])
   dat = as.matrix(data[, biomarkers])
@@ -42,11 +43,23 @@ hd_calc = function(data, reference, biomarkers){
 
   else {
 
-    means = colMeans(ref)
-    cv_mat = var(ref)
+    if (is.null(reference_weights)) {
+      means <- colMeans(ref)
+      cv_mat <- var(ref)
+    }
+
+    else {
+
+      reference_fit <- cov.wt(
+        ref,
+        wt = reference_weights,
+        method = "unbiased"
+      )
+      means <- reference_fit$center
+      cv_mat <- reference_fit$cov
+    }
 
   }
-
   if(nrow(dat) == 1){
     warning("The function does not work with single-row data")
   }
@@ -66,11 +79,12 @@ hd_calc = function(data, reference, biomarkers){
     select(sampleID,all_of(biomarkers)) %>%
     na.omit()
 
+  dat$hd_raw <- hd
   dat$hd = hd/sd(hd)
   dat$hd_log = log(hd)/sd(log(hd))
   nobs = sum(!is.na(dat$hd))
 
-  dat = left_join(data, dat[,c("sampleID","hd","hd_log")], by = "sampleID")
+  dat = left_join(data, dat[,c("sampleID", "hd_raw", "hd", "hd_log")], by = "sampleID")
   fit = list(mcov = means, cov_mat = cv_mat, nobs = nobs)
   hd = list(data = as.data.frame(dat),fit = fit)
 

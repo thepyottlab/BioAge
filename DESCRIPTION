@@ -2,8 +2,8 @@ Type: Package
 Package: BioAge
 Title: Biological Age Calculations Using Several Biomarker Algorithms
 Version: 0.1.0
-Author: Dayoon Kwon, Daniel Belsky
-Maintainer: Dayoon Kwon <dayoonk@ucla.edu>
+Author: Dayoon Kwon, Daniel Belsky, Tom Naber
+Maintainer: Tom Naber <t.h.naber@umcg.nl>
 Description: This package measures biological aging using data from the
     National Health and Nutrition Examination Survey (NHANES). The package
     uses published biomarker algorithms to calculate three biological

@@ -18,11 +18,11 @@ from blood chemistry and organ function test data: BioAge. GeroScience
 ## Installation (via devtools):
 
 You can install the released version of BioAge from
-(<https://github.com/dayoonkwon/BioAge>) with:
+(<https://github.com/thepyottlab/BioAge>) with:
 
 ``` r
 install.packages("devtools")
-devtools::install_github("dayoonkwon/BioAge")
+devtools::install_github("thepyottlab/BioAge")
 ```
 
 ## Example
